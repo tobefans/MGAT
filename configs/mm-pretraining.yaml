@@ -1,0 +1,87 @@
+modality: 'multi'
+device: 'cuda'
+log_dir: '../logs/iemocap_bal1_rob40wavlm320ap8_2selfv1_noclr_3focal_05mr1d4w124ff_3self_e100_bs32_cos10lr3_wd4d05'
+model:
+  encoder_audio: 'microsoft/wavlm-large'
+  encoder_text: 'roberta-large'
+  config_self:
+    model_base: 'FocalTransformerLayers'
+    rewrite_param_1:
+      num_hidden_layers: 2
+      hidden_size: 1024
+      num_attention_heads: 8
+      mlp_ratio: 0.5
+      window_size: 4
+      focal_factors: [1]
+      focal_stages: []
+      self_attn: True
+    rewrite_param_2:
+      num_hidden_layers: 2
+      hidden_size: 1024
+      num_attention_heads: 8
+      mlp_ratio: 0.5
+      window_size: 4
+      focal_factors: [1]
+      focal_stages: []
+      self_attn: True
+  config_cross:
+    model_name: 'CrossAttentionModel'
+    model_base: 'FocalTransformerLayers'
+    config_name_1: 'WavLMConfig'
+    rewrite_param_1:
+      num_hidden_layers: 3
+      hidden_size: 1024
+      num_attention_heads: 8
+      mlp_ratio: 0.5
+      window_size: 4
+      focal_factors: [1,2,4]
+      focal_stages: [0,1,2,3,4]
+      self_attn: False
+    config_name_2: 'WavLMConfig'
+    rewrite_param_2:
+      num_hidden_layers: 3
+      hidden_size: 1024
+      num_attention_heads: 8
+      mlp_ratio: 0.5
+      window_size: 4
+      focal_factors: [1,2,4]
+      focal_stages: [0,1,2,3,4]
+      self_attn: False
+    config_name_cat: 'WavLMConfig'
+    rewrite_param_cat:
+      num_hidden_layers: 3
+      hidden_size: 1024
+      num_attention_heads: 8
+      mlp_ratio: 0.5
+      window_size: 4
+      focal_factors: [1,2,4]
+      focal_stages: [0,1,2,3,4]
+      self_attn: True
+  embed_dim: 1024
+  temperature: 0.3 # 0.07 0.3 0.4
+  num_neg_quene: 16
+  average_top_k_layers: 8
+  head_layers: 2
+  num_classes: 4
+  dropout: 0.5
+  normalize_targets: false
+dataset:
+  corps: 'iemocap'
+  path: '/148Dataset/data-fan.weiquan/datasets/IEMOCAP/iemocap_4class.csv'
+  path_feat_t: '/148Dataset/data-fan.weiquan/datasets/IEMOCAP/features/roberta/'
+  path_feat_a: '/148Dataset/data-fan.weiquan/datasets/IEMOCAP/features/wavlm/'
+  max_len_t: 40 #20
+  max_len_a: 320 #320 #240 # 460
+  pool_feat_audio: 8 #8 #6
+  mlm_probability: 0.3  # 0.15  # text
+  mask_time_prob: 0.3   # 0.05  # audio
+  mask_time_length: 3   # 10     # audio
+train:
+  train_batch_size: 32
+  val_batch_size: 32
+  num_epochs: 100
+  lr: 1e-3 #5e-3 #1e-3 #5e-4
+  weight_decay: 1e-4 #5e-3 #1e-4 # 1e-5
+  step_size: 30
+  gamma: 0.5
+  T0: 10 #20 #10
