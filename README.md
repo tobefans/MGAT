@@ -1,3 +1,3 @@
 # MGAT: MULTI-GRANULARITY ATTENTION BASED TRANSFORMERS FOR MULTI-MODAL EMOTION RECOGNITION
 
-![image](https://github.com/tobefans/MGAT/blob/main/framework.pdf)
+![image](https://github.com/tobefans/MGAT/blob/main/scheme.png)
